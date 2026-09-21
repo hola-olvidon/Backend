@@ -5,10 +5,14 @@ WORKDIR /app
 
 # Install dependencies first to leverage Docker cache
 COPY package*.json ./
+# Install all dependencies including devDependencies for the build process
 RUN npm ci
 
 # Copy source and config
 COPY . .
+
+# Install the missing adapter needed for the build
+RUN npm install @prisma/adapter-pg pg
 
 # Generate Prisma Client
 RUN npx prisma generate

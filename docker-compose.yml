@@ -1,7 +1,7 @@
 services:
   backend:
     build:
-      context: ./Backend
+      context: .
       dockerfile: Dockerfile
     container_name: hola-olvidon-backend
     restart: always
@@ -44,7 +44,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -61,8 +61,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      - ROOT_USER=rustfsadmin
-      - ROOT_PASSWORD=rustfsadmin
+      - RUSTFS_ROOT_USER=rustfsadmin
+      - RUSTFS_ROOT_PASSWORD=rustfsadmin
     volumes:
       - rustfs_data:/data
     networks:
