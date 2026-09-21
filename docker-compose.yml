@@ -8,12 +8,23 @@ services:
     ports:
       - "3000:3000"
     environment:
+      # postgres
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/hola_olvidon?schema=public
-      - S3_ENDPOINT=http://rustfs:9000
-      - S3_ACCESS_KEY=rustfsadmin
-      - S3_SECRET_KEY=rustfsadmin
-      - S3_BUCKET=alarms
+      # s3
+      - AWS_S3_ENDPOINT=http://rustfs:9000
+      - AWS_REGION=catfish
+      - AWS_ACCESS_KEY_ID=rustfsadmin
+      - AWS_SECRET_ACCESS_KEY=rustfsadmin
+      - AWS_S3_BUCKET_NAME=alarmas-bucket
       - NODE_ENV=production
+      # jwt
+      - JWT_SECRET=tu_clave_secreta_super_segura_jwt_2026
+      - JWT_EXPIRES_IN=24h
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin_password_seguro
+
+      # app
+      - MOBILE_API_KEY=clave_secreta_movil
     depends_on:
       postgres:
         condition: service_healthy
