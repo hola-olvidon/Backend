@@ -35,7 +35,7 @@ while ! node -e "const net=require('net'); const host=process.argv[1]; const por
   sleep 2
 done
 
-# --- Creación del Bucket de RustFS con Autenticación ---
+# --- Creación del Bucket de RustFS ---
 if [ -n "${AWS_S3_BUCKET_NAME:-}" ]; then
   echo "Asegurando que el bucket ${AWS_S3_BUCKET_NAME} exista..."
   node -e "
@@ -46,7 +46,6 @@ if [ -n "${AWS_S3_BUCKET_NAME:-}" ]; then
     const secretKey = process.env.AWS_SECRET_ACCESS_KEY;
     const u = new URL(endpoint);
 
-    // Basic auth for RustFS management API
     const auth = Buffer.from(\`\${accessKey}:\${secretKey}\`).toString('base64');
 
     const req = http.request({
@@ -58,7 +57,7 @@ if [ -n "${AWS_S3_BUCKET_NAME:-}" ]; then
         'Authorization': 'Basic ' + auth
       }
     }, (res) => {
-      if (res.statusCode === 200) console.log('Bucket creado exitosamente o ya existía.');
+      if (res.statusCode === 200 || res.statusCode === 201) console.log('Bucket creado exitosamente o ya existía.');
       else console.log('Estado al crear bucket: ' + res.statusCode);
       process.exit(0);
     });
@@ -71,8 +70,9 @@ if [ -n "${AWS_S3_BUCKET_NAME:-}" ]; then
 fi
 
 echo "Aplicando migraciones de Prisma..."
-# We inject DATABASE_URL directly to ensure Prisma picks it up during the shell execution
-DATABASE_URL="${DATABASE_URL}" npx prisma migrate deploy
+# Usamos export para asegurarnos que el subproceso de npx herede la variable
+export DATABASE_URL="${DATABASE_URL}"
+npx prisma migrate deploy
 
 echo "Iniciando la aplicación..."
 exec npm run start:prod
