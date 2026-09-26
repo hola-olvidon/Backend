@@ -11,9 +11,6 @@ RUN npm ci
 # Copy source and config
 COPY . .
 
-# Install the missing adapter needed for the build
-RUN npm install @prisma/adapter-pg pg
-
 # Generate Prisma Client
 RUN npx prisma generate
 
@@ -30,7 +27,9 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/docker/entrypoint.sh ./docker/entrypoint.sh
+COPY --from=build /app/docker/ensure-bucket.js ./docker/ensure-bucket.js
 
 # Set permissions for the entrypoint script
 RUN chmod +x ./docker/entrypoint.sh

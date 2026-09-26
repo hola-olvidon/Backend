@@ -38,35 +38,7 @@ done
 # --- Creación del Bucket de RustFS ---
 if [ -n "${AWS_S3_BUCKET_NAME:-}" ]; then
   echo "Asegurando que el bucket ${AWS_S3_BUCKET_NAME} exista..."
-  node -e "
-    const http = require('http');
-    const bucket = process.env.AWS_S3_BUCKET_NAME;
-    const endpoint = process.env.AWS_S3_ENDPOINT;
-    const accessKey = process.env.AWS_ACCESS_KEY_ID;
-    const secretKey = process.env.AWS_SECRET_ACCESS_KEY;
-    const u = new URL(endpoint);
-
-    const auth = Buffer.from(\`\${accessKey}:\${secretKey}\`).toString('base64');
-
-    const req = http.request({
-      hostname: u.hostname,
-      port: u.port || 80,
-      path: '/' + bucket,
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Basic ' + auth
-      }
-    }, (res) => {
-      if (res.statusCode === 200 || res.statusCode === 201) console.log('Bucket creado exitosamente o ya existía.');
-      else console.log('Estado al crear bucket: ' + res.statusCode);
-      process.exit(0);
-    });
-    req.on('error', (e) => {
-      console.error('Error creando bucket: ' + e.message);
-      process.exit(0);
-    });
-    req.end();
-  "
+  node ./docker/ensure-bucket.js
 fi
 
 echo "Aplicando migraciones de Prisma..."

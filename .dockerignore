@@ -1,0 +1,28 @@
+# Dependencias y artefactos de build (se generan dentro de la imagen)
+node_modules
+dist
+build
+coverage
+
+# Control de versiones y entorno
+.git
+.gitignore
+.env
+.env.*
+
+# Logs y temporales
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+.temp
+.tmp
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+
+# Documentación y config local
+README.md
