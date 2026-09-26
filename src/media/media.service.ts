@@ -10,9 +10,11 @@ import {
   ListObjectsV2Command,
   HeadObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { PrismaService } from '../prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Readable } from 'stream';
 
 @Injectable()
 export class MediaService {
@@ -113,6 +115,34 @@ export class MediaService {
     });
 
     return Promise.all(audiosPromesas);
+  }
+
+  async streamAudio(fileKey: string): Promise<{
+    body: Readable;
+    contentType?: string;
+  }> {
+    try {
+      const response = await this.s3Client.send(
+        new GetObjectCommand({
+          Bucket: this.bucketName,
+          Key: `audios/${fileKey}`,
+        }),
+      );
+
+      return {
+        body: response.Body as Readable,
+        contentType: response.ContentType,
+      };
+    } catch (err: unknown) {
+      const e = err as {
+        name?: string;
+        $metadata?: { httpStatusCode?: number };
+      };
+      if (e?.name === 'NoSuchKey' || e?.$metadata?.httpStatusCode === 404) {
+        throw new NotFoundException(`Audio "${fileKey}" no encontrado`);
+      }
+      throw err;
+    }
   }
 
   async deleteAudio(

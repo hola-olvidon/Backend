@@ -8,6 +8,7 @@ import {
   UploadedFile,
   BadRequestException,
   UseGuards,
+  StreamableFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -84,6 +85,19 @@ export class MediaController {
   @ApiResponse({ status: 401, description: 'No autorizado' })
   async getAudios() {
     return this.mediaService.listAudios();
+  }
+
+  @Get('audios/:fileKey')
+  @ApiOperation({ summary: 'Reproducir un audio subido (streaming)' })
+  @ApiResponse({ status: 200, description: 'Archivo de audio' })
+  @ApiResponse({ status: 404, description: 'Audio no encontrado' })
+  async streamAudio(
+    @Param('fileKey') fileKey: string,
+  ): Promise<StreamableFile> {
+    const { body, contentType } = await this.mediaService.streamAudio(fileKey);
+    return new StreamableFile(body, {
+      type: contentType ?? 'application/octet-stream',
+    });
   }
 
   @Delete('audios/:fileKey')
