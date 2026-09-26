@@ -2,9 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LoggingInterceptor } from './logging/logging.interceptor';
+import { AllExceptionsFilter } from './logging/all-exceptions.filter';
+import { nestLoggerLevels, parseLogLevel } from './logging/log-level';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logLevel = parseLogLevel(process.env.LOG_LEVEL);
+
+  const app = await NestFactory.create(AppModule, {
+    logger: nestLoggerLevels(logLevel),
+  });
+
+  app.useGlobalInterceptors(new LoggingInterceptor(logLevel));
+  app.useGlobalFilters(new AllExceptionsFilter(logLevel));
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Ignora los campos que NO estén definidos en el DTO

@@ -17,6 +17,8 @@ services:
       - AWS_SECRET_ACCESS_KEY=rustfsadmin
       - AWS_S3_BUCKET_NAME=alarmas-bucket
       - NODE_ENV=production
+      # logs
+      - LOG_LEVEL=info
       # jwt
       - JWT_SECRET=tu_clave_secreta_super_segura_jwt_2026
       - JWT_EXPIRES_IN=24h
