@@ -7,11 +7,8 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import {
-  AppLogLevel,
-  isLevelEnabled,
-  parseLogLevel,
-} from './log-level';
+import { isLevelEnabled, parseLogLevel } from './log-level';
+import type { AppLogLevel } from './log-level';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {

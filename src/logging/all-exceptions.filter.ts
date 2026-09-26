@@ -6,11 +6,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import {
-  AppLogLevel,
-  isLevelEnabled,
-  parseLogLevel,
-} from './log-level';
+import { isLevelEnabled, parseLogLevel } from './log-level';
+import type { AppLogLevel } from './log-level';
 
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
