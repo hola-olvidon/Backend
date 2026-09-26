@@ -41,7 +41,10 @@ export class CreateAlarmDto {
   })
   @IsString()
   @IsOptional()
-  @IsUrl({}, { message: 'La URL del audio debe ser una dirección web válida' })
+  @IsUrl(
+    { require_tld: false },
+    { message: 'La URL del audio debe ser una dirección web válida' },
+  )
   urlAudio?: string;
 
   @ApiPropertyOptional({
