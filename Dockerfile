@@ -30,6 +30,10 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/docker/entrypoint.sh ./docker/entrypoint.sh
+
+# Set permissions for the entrypoint script
+RUN chmod +x ./docker/entrypoint.sh
 
 # Set environment to production
 ENV NODE_ENV=production
@@ -37,4 +41,4 @@ ENV NODE_ENV=production
 # The app runs on port 3000 by default in NestJS
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+ENTRYPOINT ["./docker/entrypoint.sh"]
