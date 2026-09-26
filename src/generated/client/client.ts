@@ -49,3 +49,8 @@ export type Tenant = Prisma.TenantModel
  * 
  */
 export type Alarm = Prisma.AlarmModel
+/**
+ * Model Configuracion
+ * 
+ */
+export type Configuracion = Prisma.ConfiguracionModel

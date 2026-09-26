@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AlarmsModule } from './alarms/alarms.module';
 import { MediaModule } from './media/media.module';
 import { AuthModule } from './auth/auth.module';
+import { SettingsModule } from './config/settings.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     AlarmsModule,
     MediaModule,
     AuthModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

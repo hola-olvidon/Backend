@@ -47,6 +47,7 @@ export type AlarmCountAggregateOutputType = {
   tenantId: number
   titulo: number
   horaProgramada: number
+  recurrencia: number
   urlAudio: number
   activa: number
   _all: number
@@ -76,6 +77,7 @@ export type AlarmCountAggregateInputType = {
   tenantId?: true
   titulo?: true
   horaProgramada?: true
+  recurrencia?: true
   urlAudio?: true
   activa?: true
   _all?: true
@@ -157,7 +159,8 @@ export type AlarmGroupByOutputType = {
   id: string
   tenantId: string
   titulo: string
-  horaProgramada: Date
+  horaProgramada: Date | null
+  recurrencia: runtime.JsonValue | null
   urlAudio: string | null
   activa: boolean
   _count: AlarmCountAggregateOutputType | null
@@ -187,7 +190,8 @@ export type AlarmWhereInput = {
   id?: Prisma.StringFilter<"Alarm"> | string
   tenantId?: Prisma.StringFilter<"Alarm"> | string
   titulo?: Prisma.StringFilter<"Alarm"> | string
-  horaProgramada?: Prisma.DateTimeFilter<"Alarm"> | Date | string
+  horaProgramada?: Prisma.DateTimeNullableFilter<"Alarm"> | Date | string | null
+  recurrencia?: Prisma.JsonNullableFilter<"Alarm">
   urlAudio?: Prisma.StringNullableFilter<"Alarm"> | string | null
   activa?: Prisma.BoolFilter<"Alarm"> | boolean
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -197,7 +201,8 @@ export type AlarmOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   titulo?: Prisma.SortOrder
-  horaProgramada?: Prisma.SortOrder
+  horaProgramada?: Prisma.SortOrderInput | Prisma.SortOrder
+  recurrencia?: Prisma.SortOrderInput | Prisma.SortOrder
   urlAudio?: Prisma.SortOrderInput | Prisma.SortOrder
   activa?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
@@ -210,7 +215,8 @@ export type AlarmWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AlarmWhereInput | Prisma.AlarmWhereInput[]
   tenantId?: Prisma.StringFilter<"Alarm"> | string
   titulo?: Prisma.StringFilter<"Alarm"> | string
-  horaProgramada?: Prisma.DateTimeFilter<"Alarm"> | Date | string
+  horaProgramada?: Prisma.DateTimeNullableFilter<"Alarm"> | Date | string | null
+  recurrencia?: Prisma.JsonNullableFilter<"Alarm">
   urlAudio?: Prisma.StringNullableFilter<"Alarm"> | string | null
   activa?: Prisma.BoolFilter<"Alarm"> | boolean
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -220,7 +226,8 @@ export type AlarmOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   titulo?: Prisma.SortOrder
-  horaProgramada?: Prisma.SortOrder
+  horaProgramada?: Prisma.SortOrderInput | Prisma.SortOrder
+  recurrencia?: Prisma.SortOrderInput | Prisma.SortOrder
   urlAudio?: Prisma.SortOrderInput | Prisma.SortOrder
   activa?: Prisma.SortOrder
   _count?: Prisma.AlarmCountOrderByAggregateInput
@@ -235,7 +242,8 @@ export type AlarmScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Alarm"> | string
   tenantId?: Prisma.StringWithAggregatesFilter<"Alarm"> | string
   titulo?: Prisma.StringWithAggregatesFilter<"Alarm"> | string
-  horaProgramada?: Prisma.DateTimeWithAggregatesFilter<"Alarm"> | Date | string
+  horaProgramada?: Prisma.DateTimeNullableWithAggregatesFilter<"Alarm"> | Date | string | null
+  recurrencia?: Prisma.JsonNullableWithAggregatesFilter<"Alarm">
   urlAudio?: Prisma.StringNullableWithAggregatesFilter<"Alarm"> | string | null
   activa?: Prisma.BoolWithAggregatesFilter<"Alarm"> | boolean
 }
@@ -243,7 +251,8 @@ export type AlarmScalarWhereWithAggregatesInput = {
 export type AlarmCreateInput = {
   id?: string
   titulo: string
-  horaProgramada: Date | string
+  horaProgramada?: Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: string | null
   activa?: boolean
   tenant: Prisma.TenantCreateNestedOneWithoutAlarmsInput
@@ -253,7 +262,8 @@ export type AlarmUncheckedCreateInput = {
   id?: string
   tenantId: string
   titulo: string
-  horaProgramada: Date | string
+  horaProgramada?: Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: string | null
   activa?: boolean
 }
@@ -261,7 +271,8 @@ export type AlarmUncheckedCreateInput = {
 export type AlarmUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tenant?: Prisma.TenantUpdateOneRequiredWithoutAlarmsNestedInput
@@ -271,7 +282,8 @@ export type AlarmUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -280,7 +292,8 @@ export type AlarmCreateManyInput = {
   id?: string
   tenantId: string
   titulo: string
-  horaProgramada: Date | string
+  horaProgramada?: Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: string | null
   activa?: boolean
 }
@@ -288,7 +301,8 @@ export type AlarmCreateManyInput = {
 export type AlarmUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -297,7 +311,8 @@ export type AlarmUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -317,6 +332,7 @@ export type AlarmCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   titulo?: Prisma.SortOrder
   horaProgramada?: Prisma.SortOrder
+  recurrencia?: Prisma.SortOrder
   urlAudio?: Prisma.SortOrder
   activa?: Prisma.SortOrder
 }
@@ -381,6 +397,10 @@ export type AlarmUncheckedUpdateManyWithoutTenantNestedInput = {
   deleteMany?: Prisma.AlarmScalarWhereInput | Prisma.AlarmScalarWhereInput[]
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
@@ -388,7 +408,8 @@ export type BoolFieldUpdateOperationsInput = {
 export type AlarmCreateWithoutTenantInput = {
   id?: string
   titulo: string
-  horaProgramada: Date | string
+  horaProgramada?: Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: string | null
   activa?: boolean
 }
@@ -396,7 +417,8 @@ export type AlarmCreateWithoutTenantInput = {
 export type AlarmUncheckedCreateWithoutTenantInput = {
   id?: string
   titulo: string
-  horaProgramada: Date | string
+  horaProgramada?: Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: string | null
   activa?: boolean
 }
@@ -434,7 +456,8 @@ export type AlarmScalarWhereInput = {
   id?: Prisma.StringFilter<"Alarm"> | string
   tenantId?: Prisma.StringFilter<"Alarm"> | string
   titulo?: Prisma.StringFilter<"Alarm"> | string
-  horaProgramada?: Prisma.DateTimeFilter<"Alarm"> | Date | string
+  horaProgramada?: Prisma.DateTimeNullableFilter<"Alarm"> | Date | string | null
+  recurrencia?: Prisma.JsonNullableFilter<"Alarm">
   urlAudio?: Prisma.StringNullableFilter<"Alarm"> | string | null
   activa?: Prisma.BoolFilter<"Alarm"> | boolean
 }
@@ -442,7 +465,8 @@ export type AlarmScalarWhereInput = {
 export type AlarmCreateManyTenantInput = {
   id?: string
   titulo: string
-  horaProgramada: Date | string
+  horaProgramada?: Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: string | null
   activa?: boolean
 }
@@ -450,7 +474,8 @@ export type AlarmCreateManyTenantInput = {
 export type AlarmUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -458,7 +483,8 @@ export type AlarmUpdateWithoutTenantInput = {
 export type AlarmUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -466,7 +492,8 @@ export type AlarmUncheckedUpdateWithoutTenantInput = {
 export type AlarmUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
-  horaProgramada?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  horaProgramada?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recurrencia?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   urlAudio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -478,6 +505,7 @@ export type AlarmSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tenantId?: boolean
   titulo?: boolean
   horaProgramada?: boolean
+  recurrencia?: boolean
   urlAudio?: boolean
   activa?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -488,6 +516,7 @@ export type AlarmSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   tenantId?: boolean
   titulo?: boolean
   horaProgramada?: boolean
+  recurrencia?: boolean
   urlAudio?: boolean
   activa?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -498,6 +527,7 @@ export type AlarmSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   tenantId?: boolean
   titulo?: boolean
   horaProgramada?: boolean
+  recurrencia?: boolean
   urlAudio?: boolean
   activa?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -508,11 +538,12 @@ export type AlarmSelectScalar = {
   tenantId?: boolean
   titulo?: boolean
   horaProgramada?: boolean
+  recurrencia?: boolean
   urlAudio?: boolean
   activa?: boolean
 }
 
-export type AlarmOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "titulo" | "horaProgramada" | "urlAudio" | "activa", ExtArgs["result"]["alarm"]>
+export type AlarmOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "titulo" | "horaProgramada" | "recurrencia" | "urlAudio" | "activa", ExtArgs["result"]["alarm"]>
 export type AlarmInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -532,7 +563,8 @@ export type $AlarmPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     tenantId: string
     titulo: string
-    horaProgramada: Date
+    horaProgramada: Date | null
+    recurrencia: runtime.JsonValue | null
     urlAudio: string | null
     activa: boolean
   }, ExtArgs["result"]["alarm"]>
@@ -963,6 +995,7 @@ export interface AlarmFieldRefs {
   readonly tenantId: Prisma.FieldRef<"Alarm", 'String'>
   readonly titulo: Prisma.FieldRef<"Alarm", 'String'>
   readonly horaProgramada: Prisma.FieldRef<"Alarm", 'DateTime'>
+  readonly recurrencia: Prisma.FieldRef<"Alarm", 'Json'>
   readonly urlAudio: Prisma.FieldRef<"Alarm", 'String'>
   readonly activa: Prisma.FieldRef<"Alarm", 'Boolean'>
 }

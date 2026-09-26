@@ -398,7 +398,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Tenant: 'Tenant',
-  Alarm: 'Alarm'
+  Alarm: 'Alarm',
+  Configuracion: 'Configuracion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "alarm"
+    modelProps: "tenant" | "alarm" | "configuracion"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -566,6 +567,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Configuracion: {
+      payload: Prisma.$ConfiguracionPayload<ExtArgs>
+      fields: Prisma.ConfiguracionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ConfiguracionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ConfiguracionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>
+        }
+        findFirst: {
+          args: Prisma.ConfiguracionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ConfiguracionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>
+        }
+        findMany: {
+          args: Prisma.ConfiguracionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>[]
+        }
+        create: {
+          args: Prisma.ConfiguracionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>
+        }
+        createMany: {
+          args: Prisma.ConfiguracionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ConfiguracionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>[]
+        }
+        delete: {
+          args: Prisma.ConfiguracionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>
+        }
+        update: {
+          args: Prisma.ConfiguracionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ConfiguracionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ConfiguracionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ConfiguracionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ConfiguracionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConfiguracionPayload>
+        }
+        aggregate: {
+          args: Prisma.ConfiguracionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateConfiguracion>
+        }
+        groupBy: {
+          args: Prisma.ConfiguracionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConfiguracionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ConfiguracionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConfiguracionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -620,11 +695,20 @@ export const AlarmScalarFieldEnum = {
   tenantId: 'tenantId',
   titulo: 'titulo',
   horaProgramada: 'horaProgramada',
+  recurrencia: 'recurrencia',
   urlAudio: 'urlAudio',
   activa: 'activa'
 } as const
 
 export type AlarmScalarFieldEnum = (typeof AlarmScalarFieldEnum)[keyof typeof AlarmScalarFieldEnum]
+
+
+export const ConfiguracionScalarFieldEnum = {
+  clave: 'clave',
+  valor: 'valor'
+} as const
+
+export type ConfiguracionScalarFieldEnum = (typeof ConfiguracionScalarFieldEnum)[keyof typeof ConfiguracionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -633,6 +717,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -649,6 +741,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -682,6 +783,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -858,6 +973,7 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   tenant?: Prisma.TenantOmit
   alarm?: Prisma.AlarmOmit
+  configuracion?: Prisma.ConfiguracionOmit
 }
 
 /* Types for Logging */

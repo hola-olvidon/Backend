@@ -1,7 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../generated/client/client';
 import { CreateAlarmDto } from './dto/create-alarm.dto';
 import { UpdateAlarmDto } from './dto/update-alarm.dto';
+import { parseRecurrence } from './recurrence';
 
 @Injectable()
 export class AlarmsService {
@@ -48,15 +50,20 @@ export class AlarmsService {
       );
     }
 
-    return this.prisma.alarm.create({
-      data: {
-        tenantId: createAlarmDto.tenantId,
-        titulo: createAlarmDto.titulo,
-        horaProgramada: new Date(createAlarmDto.horaProgramada),
-        urlAudio: createAlarmDto.urlAudio,
-        activa: createAlarmDto.activa,
-      },
-    });
+    const { recurrencia, horaProgramada } = this.resolveSchedule(createAlarmDto);
+
+    const data: any = {
+      tenantId: createAlarmDto.tenantId,
+      titulo: createAlarmDto.titulo,
+      horaProgramada,
+      urlAudio: createAlarmDto.urlAudio,
+      activa: createAlarmDto.activa,
+    };
+    if (recurrencia !== null) {
+      data.recurrencia = recurrencia;
+    }
+
+    return this.prisma.alarm.create({ data });
   }
 
   // Actualizar una alarma por ID
@@ -70,10 +77,52 @@ export class AlarmsService {
       dataToUpdate.horaProgramada = new Date(updateAlarmDto.horaProgramada);
     }
 
+    // Validar/normalizar recurrencia si viene
+    if (updateAlarmDto.recurrencia !== undefined) {
+      dataToUpdate.recurrencia = updateAlarmDto.recurrencia
+        ? parseRecurrence(updateAlarmDto.recurrencia)
+        : Prisma.JsonNull;
+    }
+
     return this.prisma.alarm.update({
       where: { id },
       data: dataToUpdate,
     });
+  }
+
+  /**
+   * Resuelve el esquema de la alarma a guardar: o bien `recurrencia` (validada/normalizada) o bien
+   * `horaProgramada`. Exige exactamente una de las dos y devuelve los campos listos para Prisma.
+   */
+  private resolveSchedule(dto: CreateAlarmDto): {
+    recurrencia: Record<string, unknown> | null;
+    horaProgramada: Date | null;
+  } {
+    const tieneRecurrencia = dto.recurrencia !== undefined && dto.recurrencia !== null;
+    const tieneFecha = dto.horaProgramada !== undefined && dto.horaProgramada !== null;
+
+    if (tieneRecurrencia && tieneFecha) {
+      throw new BadRequestException(
+        'Envía "recurrencia" o "horaProgramada", no ambas a la vez',
+      );
+    }
+    if (!tieneRecurrencia && !tieneFecha) {
+      throw new BadRequestException(
+        'Debe enviar "recurrencia" (alarma recurrente) o "horaProgramada" (alarma de una sola vez)',
+      );
+    }
+
+    if (tieneRecurrencia) {
+      return {
+        recurrencia: parseRecurrence(dto.recurrencia) as unknown as Record<string, unknown>,
+        horaProgramada: null,
+      };
+    }
+
+    return {
+      recurrencia: null,
+      horaProgramada: new Date(dto.horaProgramada as string),
+    };
   }
 
   // Eliminar una alarma por ID
