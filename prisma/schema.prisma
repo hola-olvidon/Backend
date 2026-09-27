@@ -27,9 +27,15 @@ model Alarm {
   tenantId String
 
   titulo         String
-  horaProgramada DateTime
+  horaProgramada DateTime?
+  recurrencia    Json?
   urlAudio       String?
   activa         Boolean  @default(true)
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model Configuracion {
+  clave String @id
+  valor String
 }

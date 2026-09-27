@@ -1,0 +1,82 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hola-olvidon-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # postgres
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/hola_olvidon?schema=public
+      # s3
+      - AWS_S3_ENDPOINT=http://rustfs:9000
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=rustfsadmin
+      - AWS_SECRET_ACCESS_KEY=rustfsadmin
+      - AWS_S3_BUCKET_NAME=alarmas-bucket
+      - NODE_ENV=production
+      # logs
+      - LOG_LEVEL=info
+      # jwt
+      - JWT_SECRET=tu_clave_secreta_super_segura_jwt_2026
+      - JWT_EXPIRES_IN=24h
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin_password_seguro
+
+      # app
+      - MOBILE_API_KEY=clave_secreta_movil
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rustfs:
+        condition: service_started
+    networks:
+      - hola-network
+
+  postgres:
+    image: postgres:18.6-alpine3.24
+    container_name: hola-olvidon-db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=hola_olvidon
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hola-network
+
+  rustfs:
+    image: rustfs/rustfs:1.0.0
+    container_name: hola-olvidon-storage
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - RUSTFS_ROOT_USER=rustfsadmin
+      - RUSTFS_ROOT_PASSWORD=rustfsadmin
+      - RUSTFS_ACCESS_KEY=rustfsadmin
+      - RUSTFS_SECRET_KEY=rustfsadmin
+      - RUSTFS_REGION=us-east-1
+    volumes:
+      - rustfs_data:/data
+    networks:
+      - hola-network
+
+networks:
+  hola-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  rustfs_data:

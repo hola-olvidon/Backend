@@ -15,11 +15,24 @@ export class TenantsService {
     });
   }
 
-  // Obtener un tenant por ID
+  // Listado público para la app móvil (solo id y nombre, sin password ni alarmas)
+  findAllPublic() {
+    return this.prisma.tenant.findMany({
+      select: { id: true, nombre: true },
+      orderBy: { creadoEn: 'asc' },
+    });
+  }
+
+  // Obtener un tenant por ID (sin exponer la contraseña)
   async findOne(id: string) {
     const tenant = await this.prisma.tenant.findUnique({
       where: { id },
-      include: { alarms: true },
+      select: {
+        id: true,
+        nombre: true,
+        creadoEn: true,
+        alarms: true,
+      },
     });
 
     if (!tenant) {

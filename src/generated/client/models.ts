@@ -10,4 +10,5 @@
  */
 export type * from './models/Tenant.js'
 export type * from './models/Alarm.js'
+export type * from './models/Configuracion.js'
 export type * from './commonInputTypes.js'
